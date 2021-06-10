@@ -1,7 +1,9 @@
  import {useState} from "react";
 
+ import contactService from './services/contacts'
 
-const PersonsForm = ({persons, setPersons}) => {
+
+const PersonsForm = ({contacts, setContacts}) => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
 
@@ -17,17 +19,47 @@ const PersonsForm = ({persons, setPersons}) => {
     // pevent from submit
     e.preventDefault()
 
+
     // make sure name isnt in list already
-    persons.some(person => person.name === newName ) ?
-      alert(`${newName} is already added to phonebook`) :
-      setPersons(persons.concat({name: newName, number: newNumber}))
+    if (contacts.some(person => person.name === newName)) {
+      // Find contact from list
+      let existingContact = contacts.find(contact => contact.name === newName)
+
+      if(window.confirm(`${newName} already added. want to update number?`)){
+        // Update in database
+        existingContact.number = newNumber
+        contactService.update(existingContact.id, existingContact).then(() => {
+          // Udpate in app
+          let updateContacts = contacts.map(contact => {
+            if(contact.name === newName){
+              contact.number = newNumber;
+            }
+            return contact
+          })
+          setContacts(updateContacts)
+        })
+      }
+
+    }else{
+      contactService.create({
+        name: newName,
+        number: newNumber
+      }).then(person => {
+        setContacts(contacts.concat({name: person.name, number: person.number, id: person.id}))
+      }).catch(error => {
+        alert(`Error uploading to server: ${error}`)
+      })
+    }
+
+    setNewName('')
+    setNewNumber('')
   }
 
   return (
     <form>
       <div>
-        name: <input onChange={changeNewName} /><br />
-        number: <input onChange={changeNewNumber} />
+        name: <input value={newName} onChange={changeNewName} /><br />
+        number: <input value={newNumber} onChange={changeNewNumber} /> 
       </div>
       <div>
         <button onClick={(e) => handleNewContact(e)}>add</button>

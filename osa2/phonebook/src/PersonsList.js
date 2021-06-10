@@ -1,12 +1,34 @@
-const PersonsList = ({persons, filterName}) => {
-  const personsList =
+import contactService from './services/contacts'
+
+const PersonsList = ({contacts, setContacts, filterName}) => {
+  
+  const contactList =
     filterName === '' ?
-      persons :
-      persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
+      contacts :
+      contacts.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
+
+  const deleteContact = (id) => {
+    let existingContact = contacts.find(contact => contact.id === id)
+
+    if(!window.confirm(`Delete contact ${existingContact.name}?`)){
+      return
+    }
+    contactService
+      .deleteById(id)
+      .then(response => {
+        const updatedContact = contacts.filter(person => person.id !== id)
+        setContacts(updatedContact)
+      })
+      .catch(error => {
+        alert(`error deleting contact`)
+      })
+  }
 
   return (
     <div>
-      {personsList.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+      {contactList.map(person => 
+        <li key={person.id}>{person.id}: {person.name} {person.number} <button onClick={()=>deleteContact(person.id)}>Delete</button></li>
+      )}
     </div>
   )
 }
