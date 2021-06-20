@@ -1,6 +1,6 @@
 import contactService from './services/contacts'
 
-const PersonsList = ({contacts, setContacts, filterName}) => {
+const PersonsList = ({contacts, setContacts, filterName, setNotification}) => {
   
   const contactList =
     filterName === '' ?
@@ -18,9 +18,25 @@ const PersonsList = ({contacts, setContacts, filterName}) => {
       .then(response => {
         const updatedContact = contacts.filter(person => person.id !== id)
         setContacts(updatedContact)
+        setNotification({
+          text: `Deleted contact ${existingContact.name}`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          setNotification('')
+        }, 3000)
       })
       .catch(error => {
-        alert(`error deleting contact`)
+        const updatedContact = contacts.filter(person => person.id !== id)
+        setContacts(updatedContact)
+        
+        setNotification({
+          text: `Information of ${existingContact.name} has already been deleted`,
+          type: 'error'
+        })
+        setTimeout(() => {
+          setNotification('')
+        }, 3000)
       })
   }
 

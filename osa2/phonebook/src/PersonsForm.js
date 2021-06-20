@@ -3,7 +3,7 @@
  import contactService from './services/contacts'
 
 
-const PersonsForm = ({contacts, setContacts}) => {
+const PersonsForm = ({contacts, setContacts, setNotification}) => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
 
@@ -37,6 +37,13 @@ const PersonsForm = ({contacts, setContacts}) => {
             return contact
           })
           setContacts(updateContacts)
+          setNotification({
+            text: `Updated ${existingContact.name} number to ${newNumber}`,
+            type: 'success'
+          })
+          setTimeout(() => {
+            setNotification('')
+          }, 3000)
         })
       }
 
@@ -45,7 +52,15 @@ const PersonsForm = ({contacts, setContacts}) => {
         name: newName,
         number: newNumber
       }).then(person => {
-        setContacts(contacts.concat({name: person.name, number: person.number, id: person.id}))
+        let newContacts = contacts.concat({name: person.name, number: person.number, id: person.id}) 
+        setContacts(newContacts)
+        setNotification({
+          text: `Added ${newName}`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          setNotification('')
+        }, 3000)
       }).catch(error => {
         alert(`Error uploading to server: ${error}`)
       })
