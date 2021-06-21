@@ -7,8 +7,9 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "cd ../.. && git subtree push --prefix osa3/phonebook-backend heroku master"
-
+    "deploy": "cd ../.. && git subtree push --prefix osa3/phonebook-backend heroku master",
+    "build:ui": "rm -r build && cd ../phonebook-frontend && npm run build --prod && cp -r build ../phonebook-backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy"
   },
   "repository": {
     "type": "git",
