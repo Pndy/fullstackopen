@@ -31,6 +31,17 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
+app.get('/api/persons/:id', (req, res, next) => {
+    const id = Number(req.params.id)
+    Person.findById(req.params.id).then(person => {
+        if(person){
+            res.json(person)
+        } else {
+            res.status(404).end()
+        }
+    }).catch(error => next(error))
+})
+
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
@@ -62,15 +73,18 @@ app.post('/api/persons', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res, next) => {
-    const id = Number(req.params.id)
-    Person.findById(req.params.id).then(person => {
-        if(person){
-            res.json(person)
-        } else {
-            res.status(404).end()
-        }
-    }).catch(error => next(error))
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+
+    const person = {
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(req.params.id, person, {new:true})
+        .then(updatedPerson => {
+            console.log(updatedPerson)
+            res.json(updatedPerson)
+        }).catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {

@@ -30,3 +30,12 @@ content-type: application/json
     "name": "Rest Test",
     "number": "040-123456789"
 }
+
+###
+
+PUT http://localhost:3001/api/persons/60d46eb0de9498287092e874
+content-type: application/json
+
+{
+    "number": "040-123456789"
+}
