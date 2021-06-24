@@ -28,7 +28,9 @@ const PersonsForm = ({contacts, setContacts, setNotification}) => {
       if(window.confirm(`${newName} already added. want to update number?`)){
         // Update in database
         existingContact.number = newNumber
-        contactService.update(existingContact.id, existingContact).then(() => {
+        contactService
+          .update(existingContact.id, existingContact)
+          .then(() => {
           // Udpate in app
           let updateContacts = contacts.map(contact => {
             if(contact.name === newName){
@@ -44,26 +46,43 @@ const PersonsForm = ({contacts, setContacts, setNotification}) => {
           setTimeout(() => {
             setNotification('')
           }, 3000)
+        }).catch(error => {
+          setNotification({
+            text: `${error.response.data.error}`,
+            type: 'error'
+          })
+          setTimeout(() => {
+            setNotification('')
+          }, 3000)
         })
       }
 
     }else{
-      contactService.create({
-        name: newName,
-        number: newNumber
-      }).then(person => {
-        let newContacts = contacts.concat({name: person.name, number: person.number, id: person.id}) 
-        setContacts(newContacts)
-        setNotification({
-          text: `Added ${newName}`,
-          type: 'success'
+      contactService
+        .create({
+          name: newName,
+          number: newNumber
         })
-        setTimeout(() => {
-          setNotification('')
-        }, 3000)
-      }).catch(error => {
-        alert(`Error uploading to server: ${error}`)
-      })
+        .then(person => {
+          let newContacts = contacts.concat({name: person.name, number: person.number, id: person.id}) 
+          setContacts(newContacts)
+          setNotification({
+            text: `Added ${newName}`,
+            type: 'success'
+          })
+          setTimeout(() => {
+            setNotification('')
+          }, 3000)
+        })
+        .catch(error => {
+          setNotification({
+            text: `${error.response.data.error}`,
+            type: 'error'
+          })
+          setTimeout(() => {
+            setNotification('')
+          }, 3000)
+        })
     }
 
     setNewName('')
