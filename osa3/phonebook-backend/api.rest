@@ -2,8 +2,7 @@ GET http://localhost:3001/api/persons
 
 ###
 
-GET http://localhost:3001/api/persons/4
-// Expecting 200 - Mary Poppendick
+GET http://localhost:3001/api/persons/10
 
 ###
 
