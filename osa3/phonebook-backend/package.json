@@ -7,6 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
     "deploy": "cd ../.. && git subtree push --prefix osa3/phonebook-backend heroku master",
     "build:ui": "rm -r build && cd ../phonebook-frontend && npm run build --prod && cp -r build ../phonebook-backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy"
@@ -30,6 +31,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^7.29.0",
     "nodemon": "^2.0.7"
   }
 }

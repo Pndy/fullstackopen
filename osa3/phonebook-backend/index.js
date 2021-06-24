@@ -2,10 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
 
 const Person = require('./models/person')
-const { response } = require('express')
 
 const app = express()
 
@@ -32,7 +30,6 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-    const id = Number(req.params.id)
     Person.findById(req.params.id).then(person => {
         if(person){
             res.json(person)
@@ -50,10 +47,11 @@ app.post('/api/persons', (req, res, next) => {
         number: body.number
     })
 
-    person.save().then(savedPerson => {
-        res.status(200).json(savedPerson)
-    })
-    .catch(err => next(err))
+    person.save()
+        .then(savedPerson => {
+            res.status(200).json(savedPerson)
+        })
+        .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -63,7 +61,7 @@ app.put('/api/persons/:id', (req, res, next) => {
         number: body.number
     }
 
-    Person.findByIdAndUpdate(req.params.id, person, {new:true, runValidators: true})
+    Person.findByIdAndUpdate(req.params.id, person, { new:true, runValidators: true })
         .then(updatedPerson => {
             console.log(updatedPerson)
             res.json(updatedPerson)
@@ -86,7 +84,7 @@ app.get('/info', (req, res) => {
     Person.countDocuments((err, count) => {
         if(err){
             console.log(err)
-            res.status(400).json({error: 'database error'})
+            res.status(400).json({ error: 'database error' })
         }else{
             res.send(`<p>Phonebook has info for ${count} people</p><br>${Date()}`)
         }
@@ -97,9 +95,9 @@ const errorHandler = (error, req, res, next) => {
     console.log(error.message)
 
     if(error.name === 'CastError'){
-        return res.status(400).send({error: 'malformatted id'})
+        return res.status(400).send({ error: 'malformatted id' })
     }else if(error.name === 'ValidationError') {
-        return res.status(400).json({error: error.message})
+        return res.status(400).json({ error: error.message })
     }
 
     next(error)

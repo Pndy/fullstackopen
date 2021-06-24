@@ -1,5 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+const Person = require('./models/person')
+
 
 const url = process.env.MONGODB_URI
 
@@ -9,9 +11,8 @@ if(process.argv.length < 3){
 }
 
 // Not needed as password is already in .env
-const password = process.argv[2]
 
-mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true});
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
 
 
@@ -35,7 +36,7 @@ if(process.argv.length === 3){
     })
 
     person.save().then(result => {
-        console.log(`added ${name} number ${number} to phonebook`)
+        console.log(`added ${result.name} number ${result.number} to phonebook`)
         mongoose.connection.close()
     })
 }
