@@ -100,8 +100,14 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-    let html = `<p>Phonebook has info for ${Person.count().exec()} people</p><br>${Date()}`
-    res.send(html)
+    Person.countDocuments((err, count) => {
+        if(err){
+            console.log(err)
+            res.status(400).json({error: 'database error'})
+        }else{
+            res.send(`<p>Phonebook has info for ${count} people</p><br>${Date()}`)
+        }
+    })
 })
 
 const errorHandler = (error, req, res, next) => {
