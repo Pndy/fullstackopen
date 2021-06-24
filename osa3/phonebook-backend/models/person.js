@@ -10,13 +10,13 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     })
 
 const personSchema = new mongoose.Schema({
-    id: Number,
     name: String,
     number: String
 })
 
 personSchema.set('toJSON', {
     transform: (document, retunedObject) => {
+        retunedObject.id = retunedObject._id.toString()
         delete retunedObject._id
         delete retunedObject.__v
     }

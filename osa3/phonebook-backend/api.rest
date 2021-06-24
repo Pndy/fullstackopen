@@ -2,17 +2,20 @@ GET http://localhost:3001/api/persons
 
 ###
 
-GET http://localhost:3001/api/persons/10
+// Proper URL - 200
+GET http://localhost:3001/api/persons/60d1e374e706448c5d717c63
+
+###
+// Malformatted URL - 400
+GET http://localhost:3001/api/persons/60d1e374e706448c5d717c
+
+###
+// Non-existing URL - 404
+GET http://localhost:3001/api/persons/60d46d7d8e65851ab4d62ea9
 
 ###
 
-GET http://localhost:3001/api/persons/5
-// Expecting 404
-
-
-###
-
-DELETE http://localhost:3001/api/persons/4
+DELETE http://localhost:3001/api/persons/60d46dd1dbcd652dbcdda2bd
 
 ###
 
