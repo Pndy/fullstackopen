@@ -88,6 +88,20 @@ describe('Blog: posting new blogposts', () => {
   })
 })
 
+describe('Blog: deleting posts', () => {
+
+  test('deleting deletes the blogpost', async () => {
+    const before = await helper.getAllPosts()
+
+    await api
+      .delete(`/api/blogs/${before[before.length-1].id}`)
+      .expect(204)
+
+    const after = await helper.getAllPosts()
+    expect(after.length).toBe(before.length-1)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
