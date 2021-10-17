@@ -107,3 +107,11 @@ describe('Most blogs', () => {
         expect(ret.blogs).toBe(3)
     })
 })
+
+describe('Most Likes', () => {
+    test('Which author is most liked', () => {
+        const ret = listHelper.mostLikes(listwithManyBlogs)
+        expect(ret.author).toBe('Edsger W. Dijkstra')
+        expect(ret.likes).toBe(17)
+    })
+})

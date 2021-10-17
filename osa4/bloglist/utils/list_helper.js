@@ -36,9 +36,23 @@ const mostBlogs = (blogs) => {
     return returnVal
 }
 
+const mostLikes = (blogs) => {
+    let grouped = _.groupBy(blogs, 'author')
+    let counted = _.mapValues(grouped, (value) => { return _.reduce(value, (sum, o) => {return sum+o.likes}, 0) })
+    let author = Object.keys(counted).reduce((a,b) => counted[a] > counted[b] ? a : b)
+    
+    let returnVal = {
+        author: author,
+        likes: counted[author]
+    }
+
+    return returnVal
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
+    mostLikes
 }
