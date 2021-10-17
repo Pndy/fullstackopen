@@ -31,6 +31,47 @@ describe('Blog: Get all blogposts', () => {
   })
 })
 
+describe('Blog: posting new blogposts', () => {
+  
+  test("posting correct blogpost returns itself", async () => {
+    const newPost = {
+      title: "New Post",
+      author: "New Author",
+      url: "new-post",
+      likes: 1
+    }
+
+    await api
+      .post("/api/blogs")
+      .send(newPost)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    
+
+      const posts = await helper.getAllPosts()
+      expect(posts.length).toBe(helper.initPosts.length + 1)
+      
+      const titles = posts.map(post => post.title)
+      expect(titles).toContain('New Post')
+  })
+
+  test('posting without likes sets it to 0', async () => {
+    const newPost = {
+      title: "New Post 2",
+      author: "New Author 2",
+      url: "new-post-2"
+    }
+
+    const newPostResponse = await api
+      .post("/api/blogs")
+      .send(newPost)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(newPostResponse.body.likes).toBe(0)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

@@ -7,7 +7,7 @@ blogRouter.get('/', async (request, response) => {
   })
   
 blogRouter.post('/', async (request, response) => {
-  const body = response.body
+  const body = request.body
   const blog = new Blog({
     title: body.title,
     author: body.author,
