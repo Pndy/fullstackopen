@@ -48,11 +48,11 @@ describe('Blog: posting new blogposts', () => {
       .expect('Content-Type', /application\/json/)
     
 
-      const posts = await helper.getAllPosts()
-      expect(posts.length).toBe(helper.initPosts.length + 1)
-      
-      const titles = posts.map(post => post.title)
-      expect(titles).toContain('New Post')
+    const posts = await helper.getAllPosts()
+    expect(posts.length).toBe(helper.initPosts.length + 1)
+    
+    const titles = posts.map(post => post.title)
+    expect(titles).toContain('New Post')
   })
 
   test('posting without likes sets it to 0', async () => {
@@ -69,6 +69,22 @@ describe('Blog: posting new blogposts', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(newPostResponse.body.likes).toBe(0)
+  })
+
+  test('posting without title and url returns error', async () => {
+    const newPost = {
+      author: "New Author 3",
+    }
+
+    const newPostResponse = await api
+      .post("/api/blogs")
+      .send(newPost)
+      .expect(400)
+      
+    const posts = await helper.getAllPosts()
+    const authors = posts.map(post => post.author)
+    expect(authors).not.toContain(newPost.author)
+      
   })
 })
 
