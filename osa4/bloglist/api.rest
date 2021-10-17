@@ -2,6 +2,10 @@ GET http://localhost:3001/api/blogs
 
 ###
 
+GET http://localhost:3001/api/blogs/6107f6615f072b4228ce5bb3
+
+###
+
 POST http://localhost:3001/api/blogs
 content-type: application/json
 
@@ -15,3 +19,16 @@ content-type: application/json
 ###
 
 DELETE http://localhost:3001/api/blogs/616bff36a94d79704dd2f0a
+
+
+###
+
+PUT http://localhost:3001/api/blogs/6107f6615f072b4228ce5bb3
+content-type: application/json
+
+{
+    "title": "Rest Test 2",
+    "author": "Author",
+    "url": "rest-test",
+    "likes": 11
+}

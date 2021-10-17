@@ -102,6 +102,30 @@ describe('Blog: deleting posts', () => {
   })
 })
 
+describe('Blog: content modification', () => {
+
+  test('post should update likes', async () => {
+    const posts = await helper.getAllPosts()
+
+    let updatedPost = {
+      title: posts[0].title,
+      author: posts[0].author,
+      url: posts[0].url,
+      likes: posts[0].likes+1,
+    }
+
+    const updPost = await api
+      .put(`/api/blogs/${posts[0].id}`)
+      .send(updatedPost)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(updPost.body).not.toContainEqual(posts[0])
+    expect(updPost.body.likes).toBe(posts[0].likes+1)
+  })
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
