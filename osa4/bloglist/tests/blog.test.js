@@ -24,6 +24,11 @@ describe('Blog: Get all blogposts', () => {
     const posts = await helper.getAllPosts()
     expect(posts.length).toBe(helper.initPosts.length)
   })
+
+  test('returns id on right format', async () => {
+    const posts = await helper.getAllPosts()
+    expect(posts[0].id).toBeDefined()
+  })
 })
 
 afterAll(() => {
