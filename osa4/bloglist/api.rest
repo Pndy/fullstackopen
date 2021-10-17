@@ -10,7 +10,6 @@ POST http://localhost:3001/api/blogs
 content-type: application/json
 
 {
-    "title": "Rest Test",
     "author": "Author",
     "url": "rest-test",
     "likes": 10
@@ -31,4 +30,19 @@ content-type: application/json
     "author": "Author",
     "url": "rest-test",
     "likes": 11
+}
+
+###
+
+GET http://localhost:3001/api/users
+
+###
+
+POST http://localhost:3001/api/users
+content-type: application/json
+
+{
+    "username": "user2",
+    "password": "salasana",
+    "name": "User user"
 }
