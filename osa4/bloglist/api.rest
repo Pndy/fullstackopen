@@ -11,7 +11,7 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNmM0ODg2OTM1NjIxYTQwNDljNTMzZSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTYzNDU1MjIzNn0.ygHIsX2uHa3vvPx7qMnjurzTOCNJx54OtxK9SfkT54c
 
 {
-    "title": "New blogpost 2",
+    "title": "New blogpost 3",
     "author": "Author",
     "url": "rest-test",
     "likes": 10
