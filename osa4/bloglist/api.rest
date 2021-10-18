@@ -8,9 +8,10 @@ GET http://localhost:3001/api/blogs/6107f6615f072b4228ce5bb3
 
 POST http://localhost:3001/api/blogs
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNmM0ODg2OTM1NjIxYTQwNDljNTMzZSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTYzNDU1MjIzNn0.ygHIsX2uHa3vvPx7qMnjurzTOCNJx54OtxK9SfkT54c
 
 {
-    "title": "New blogpost",
+    "title": "New blogpost 2",
     "author": "Author",
     "url": "rest-test",
     "likes": 10
@@ -18,7 +19,7 @@ content-type: application/json
 
 ###
 
-DELETE http://localhost:3001/api/blogs/616bff36a94d79704dd2f0a
+DELETE http://localhost:3001/api/blogs/616d3798c99e5cc94edde429
 
 
 ###
