@@ -47,3 +47,13 @@ content-type: application/json
     "password": "sal",
     "name": "User user"
 }
+
+###
+
+POST http://localhost:3001/api/login
+content-type: application/json
+
+{
+    "username": "user",
+    "password": "salasana"
+}
