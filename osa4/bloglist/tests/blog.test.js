@@ -4,11 +4,18 @@ const mongoose = require('mongoose')
 const helper = require("../utils/test_helper.js")
 const api = supertest(app)
 
-const blog = require('../models/blog')
+const Blog = require('../models/blog')
 
+let loggedInToken = ''
 beforeEach(async () => {
-  await blog.deleteMany({})
-  await blog.insertMany(helper.initPosts)
+  await helper.initDatabase()
+  const login = await api
+    .post("/api/login")
+    .send({
+      username: 'user',
+      password: 'salasana'
+    })
+  loggedInToken = `Bearer ${login.body.token}`
 })
 
 describe('Blog: Get all blogposts', () => {
@@ -22,7 +29,7 @@ describe('Blog: Get all blogposts', () => {
 
   test('returns right amount of posts', async () => {
     const posts = await helper.getAllPosts()
-    expect(posts.length).toBe(helper.initPosts.length)
+    expect(posts.length).toBe(2)
   })
 
   test('returns id on right format', async () => {
@@ -33,7 +40,7 @@ describe('Blog: Get all blogposts', () => {
 
 describe('Blog: posting new blogposts', () => {
   
-  test("posting correct blogpost returns itself", async () => {
+  test("posting correct blogpost without auth doesnt work", async () => {
     const newPost = {
       title: "New Post",
       author: "New Author",
@@ -44,12 +51,33 @@ describe('Blog: posting new blogposts', () => {
     await api
       .post("/api/blogs")
       .send(newPost)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    
+
+    const posts = await helper.getAllPosts()
+    expect(posts.length).toBe(2)
+  })
+
+
+  test("posting correct blogpost with auth returns itself", async () => {
+    const newPost = {
+      title: "New Post",
+      author: "New Author",
+      url: "new-post",
+      likes: 1
+    }
+
+    await api
+      .post("/api/blogs")
+      .set('Authorization', loggedInToken)
+      .send(newPost)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     
 
     const posts = await helper.getAllPosts()
-    expect(posts.length).toBe(helper.initPosts.length + 1)
+    expect(posts.length).toBe(3)
     
     const titles = posts.map(post => post.title)
     expect(titles).toContain('New Post')
@@ -64,6 +92,7 @@ describe('Blog: posting new blogposts', () => {
 
     const newPostResponse = await api
       .post("/api/blogs")
+      .set('Authorization', loggedInToken)
       .send(newPost)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -78,6 +107,7 @@ describe('Blog: posting new blogposts', () => {
 
     const newPostResponse = await api
       .post("/api/blogs")
+      .set('Authorization', loggedInToken)
       .send(newPost)
       .expect(400)
       
@@ -89,12 +119,23 @@ describe('Blog: posting new blogposts', () => {
 })
 
 describe('Blog: deleting posts', () => {
-
-  test('deleting deletes the blogpost', async () => {
+  test('deleting without auth doesnt delete posts', async () => {
     const before = await helper.getAllPosts()
 
     await api
       .delete(`/api/blogs/${before[before.length-1].id}`)
+      .expect(401)
+
+    const after = await helper.getAllPosts()
+    expect(after.length).toBe(before.length)
+  })
+
+  test('deleting with auth deletes the blogpost', async () => {
+    const before = await helper.getAllPosts()
+
+    await api
+      .delete(`/api/blogs/${before[before.length-1].id}`)
+      .set('Authorization', loggedInToken)
       .expect(204)
 
     const after = await helper.getAllPosts()
