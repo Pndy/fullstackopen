@@ -22,19 +22,19 @@ blogRouter.get('/:id', async (req, res) => {
 blogRouter.post('/', async (req, res) => {
   const body = req.body
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET)
-  if(!req.token || !decodedToken.id) {
+  if(!req.token || !req.user) {
     return res.status(401).json({ error: 'invalid or missing token'})
   }
 
-  const user = await User.findById(decodedToken.id)
+  const user = req.user
+  console.log(user)
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user._id
+    user: user._id.toString()
   })
   
   const result = await blog.save()
@@ -48,13 +48,12 @@ blogRouter.post('/', async (req, res) => {
 blogRouter.delete('/:id', async (req, res) => {
   const id = req.params.id
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET)
-  if(!req.token || !decodedToken.id) {
+  if(!req.token || !req.user) {
     return res.status(401).json({ error: 'invalid or missing token'})
   }
 
   const blog = await Blog.findById(id)
-  if(blog.user.toString() !== decodedToken.id){
+  if(blog.user.toString() !== req.user._id.toString()){
     return res.status(403).json({ error: 'no permission to delete resource'})
   }
   
