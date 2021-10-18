@@ -3,6 +3,12 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
+
+userRouter.get('/', async (req, res) => {
+  const users = await User.find({}).populate('blogs', { url: 1, title: 1, author: 1})
+  res.json(users.map(user => user.toJSON()))
+})
+
 userRouter.post('/', async (req, res, next) => {
   const body = req.body
 
@@ -24,11 +30,6 @@ userRouter.post('/', async (req, res, next) => {
 
   const savedUser = await newUser.save()
   res.json(savedUser)
-})
-
-userRouter.get('/', async (req, res) => {
-  const users = await User.find({})
-  res.json(users.map(user => user.toJSON()))
 })
 
 module.exports = userRouter
