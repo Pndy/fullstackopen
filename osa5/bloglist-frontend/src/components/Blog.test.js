@@ -51,5 +51,22 @@ describe('<Blog /> component', () => {
     expect(component.container).toHaveTextContent(`likes: ${blogData.likes}`)
   })
 
+  test('increases likes when its pressed', () => {
+    const likeBlog = jest.fn()
+    const deleteBlog = jest.fn()
+
+    let component = render(
+      <Blog blog={blogData} likeBlog={likeBlog} deleteBlog={deleteBlog} />
+    )
+    const showhideBtn = component.getByText('show')
+    fireEvent.click(showhideBtn)
+
+    const likeBtn = component.getByText('like')
+    fireEvent.click(likeBtn)
+    expect(likeBlog.mock.calls).toHaveLength(1)
+    fireEvent.click(likeBtn)
+    expect(likeBlog.mock.calls).toHaveLength(2)
+  })
+
 
 })
