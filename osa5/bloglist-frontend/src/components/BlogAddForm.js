@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogAddForm = (props) => {
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
-  
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
   const blogAdd = async(e) => {
     e.preventDefault()
-    
+
     await props.handleNewPost({
       title,
       author,
       url
     })
-    setTitle("")
-    setAuthor("")
-    setUrl("")
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -24,35 +25,39 @@ const BlogAddForm = (props) => {
         <h2>Add new blog</h2>
         <div>
           title:
-          <input 
+          <input
             type="text"
             value={title}
             name="title"
-            onChange={({target}) => setTitle(target.value)}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
           author:
-          <input 
+          <input
             type="text"
             value={author}
             name="author"
-            onChange={({target}) => setAuthor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
           url:
-          <input 
+          <input
             type="text"
             value={url}
             name="url"
-            onChange={({target}) => setUrl(target.value)}
+            onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button type="submit">Add new</button>
       </form>
     </div>
   )
+}
+
+BlogAddForm.propTypes = {
+  handleNewPost: PropTypes.func.isRequired
 }
 
 export default BlogAddForm

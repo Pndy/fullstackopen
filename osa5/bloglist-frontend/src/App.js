@@ -23,7 +23,7 @@ const App = () => {
       })
       setBlogs(resp)
     }
-    getAllBlogs() 
+    getAllBlogs()
   }, [])
 
   useEffect(() => {
@@ -41,12 +41,12 @@ const App = () => {
       window.localStorage.setItem('user', JSON.stringify(newUser))
       blogService.setToken(newUser.token)
       setUser(newUser)
-      setNotification({text: "logged in"})
+      setNotification({ text: 'logged in' })
       setTimeout(() => {
         setNotification(null)
       }, 3000)
     }catch(err){
-      setNotification({text: "incorrect login details", type: "error"})
+      setNotification({ text: 'incorrect login details', type: 'error' })
       setTimeout(() => {
         setNotification(null)
       }, 3000)
@@ -57,7 +57,7 @@ const App = () => {
     window.localStorage.removeItem('user')
     blogService.setToken(null)
     setUser(null)
-    setNotification({text: `Logged out`})
+    setNotification({ text: 'Logged out' })
     setTimeout(() => {
       setNotification(null)
     }, 3000)
@@ -67,13 +67,13 @@ const App = () => {
     try{
       const newPost = await blogService.create(details)
       setBlogs(blogs.concat(newPost))
-      setNotification({text: `Added ${newPost.title} by ${newPost.author}`})
+      setNotification({ text: `Added ${newPost.title} by ${newPost.author}` })
       setTimeout(() => {
         setNotification(null)
       }, 3000)
       blogformRef.current.toggleVisibility()
     }catch(err){
-      setNotification({text: `Error adding blogpost`, type: 'error'})
+      setNotification({ text: 'Error adding blogpost', type: 'error' })
       setTimeout(() => {
         setNotification(null)
       }, 3000)
@@ -105,29 +105,28 @@ const App = () => {
 
   const deleteBlog = async (id) => {
     const response = await blogService.deleteBlog(id)
-    if(response.status === 204) {      
+    if(response.status === 204) {
       const newBlogList = blogs.filter(b => {return b.id.toString() !== id.toString() })
       setBlogs(newBlogList)
     }
   }
 
-  
   return (
     <div>
       <h1>Blogs</h1>
       {user === null ? null :
-      <div>
-        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      </div>
+        <div>
+          <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+        </div>
       }
       <Notification details={notification} />
       {user === null ?
-          <LoginForm
-            handleLogin={handleLogin}
-          />
-      : 
+        <LoginForm
+          handleLogin={handleLogin}
+        />
+        :
         <Togglable showText="add new blog" ref={blogformRef}>
-          <BlogAddForm 
+          <BlogAddForm
             handleNewPost={handleNewPost}
           />
         </Togglable>
