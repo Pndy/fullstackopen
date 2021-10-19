@@ -31,6 +31,7 @@ const App = () => {
     if(userJson){
       const newUser = JSON.parse(userJson)
       setUser(newUser)
+      blogService.setToken(newUser.token)
     }
   }, [])
 
@@ -102,6 +103,14 @@ const App = () => {
     setBlogs(newBlogList)
   }
 
+  const deleteBlog = async (id) => {
+    const response = await blogService.deleteBlog(id)
+    if(response.status === 204) {      
+      const newBlogList = blogs.filter(b => {return b.id.toString() !== id.toString() })
+      setBlogs(newBlogList)
+    }
+  }
+
   
   return (
     <div>
@@ -125,7 +134,7 @@ const App = () => {
       }
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} user={user} />
       )}
     </div>
   )
