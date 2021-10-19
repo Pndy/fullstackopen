@@ -61,5 +61,27 @@ describe('Blog app ', function() {
       cy.contains('New Blogpost')
       cy.contains('Jaska Jokunen')
     })
+
+    describe('blog manipulation', function () {
+      beforeEach(function () {
+        const blog = {
+          title: 'New Blogpost',
+          author: 'Jaska Jokunen',
+          url: 'http://localhost/blog/1'
+        }
+        cy.addBlog(blog)
+      })
+
+      it.only('should be able to like posts', function() {
+        cy.contains('New Blogpost').find('button').click()
+        cy.contains('http://localhost/blog/1')
+
+        cy.contains('New Blogpost').contains('likes:').as('likes')
+        cy.get('@likes').contains('0')
+
+        cy.get('@likes').parent().find('button').contains('like').click()
+        cy.get('@likes').contains('1')
+      })
+    })
   })
 })

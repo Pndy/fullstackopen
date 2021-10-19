@@ -15,7 +15,7 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
       {visible ?
         <>
           <br />{blog.url}
-          <br />likes: {blog.likes} <button onClick={() => likeBlog(blog)}>like</button>
+          <br /><span>likes: {blog.likes}</span> <button onClick={() => likeBlog(blog)}>like</button>
           <br />{blog.user.name}
           {user && blog.user.username === user.username ?
             <>
