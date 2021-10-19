@@ -13,7 +13,6 @@ const App = () => {
 
   const [notification, setNotification] = useState(null)
 
-  const loginformRef = useRef()
   const blogformRef = useRef()
 
   useEffect(() => {
@@ -75,6 +74,26 @@ const App = () => {
       console.log(err)
     }
   }
+
+  const likeBlog = async (bloginfo) => {
+    const newBlog = {
+      title: bloginfo.title,
+      author: bloginfo.author,
+      url: bloginfo.url,
+      likes: bloginfo.likes+1,
+      user: bloginfo.user.id,
+    }
+
+    const response = await blogService.update(newBlog, bloginfo.id)
+    const newBlogList = blogs.map((b) => {
+      if(b.id.toString() === response.id.toString()){
+        b.likes = response.likes
+      }
+      return b
+    })
+    setBlogs(newBlogList)
+  }
+
   
   return (
     <div>
@@ -98,7 +117,7 @@ const App = () => {
       }
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
       )}
     </div>
   )
