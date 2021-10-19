@@ -16,9 +16,14 @@ const App = () => {
   const blogformRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const getAllBlogs = async () => {
+      const resp = await blogService.getAll()
+      resp.sort((a, b) => {
+        return b.likes - a.likes
+      })
+      setBlogs(resp)
+    }
+    getAllBlogs() 
   }, [])
 
   useEffect(() => {
@@ -90,6 +95,9 @@ const App = () => {
         b.likes = response.likes
       }
       return b
+    })
+    newBlogList.sort((a, b) => {
+      return b.likes - a.likes
     })
     setBlogs(newBlogList)
   }
