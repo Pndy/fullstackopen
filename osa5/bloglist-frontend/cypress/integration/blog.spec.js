@@ -42,4 +42,24 @@ describe('Blog app ', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('when logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'user', password: 'password' })
+    })
+
+    it('blog can be added', function () {
+      cy.contains('add new blog').click()
+
+      cy.get('#titleInput').type('New Blogpost')
+      cy.get('#authorInput').type('Jaska Jokunen')
+      cy.get('#urlInput').type('http://localhost/blog/1')
+
+      cy.get('#blogformSubmit').click()
+
+      cy.contains('add new blog')
+      cy.contains('New Blogpost')
+      cy.contains('Jaska Jokunen')
+    })
+  })
 })
