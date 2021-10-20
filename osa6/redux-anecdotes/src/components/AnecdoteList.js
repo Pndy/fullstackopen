@@ -1,13 +1,13 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
-import {showNotification, hideNotification } from '../reducers/notificationReducer'
+import { showNotification, hideNotification } from '../reducers/notificationReducer'
 
-const AnecdoteForm = (props) => {
+const AnecdoteForm = () => {
   const filter = useSelector(state => state.filter)
   const anecdotes = useSelector(state => {
     return filter === '' ? state.anecdotes :
-    state.anecdotes.filter(a => a.content.toLowerCase().includes(filter.toLowerCase()))
+      state.anecdotes.filter(a => a.content.toLowerCase().includes(filter.toLowerCase()))
   })
   const dispatch = useDispatch()
 
