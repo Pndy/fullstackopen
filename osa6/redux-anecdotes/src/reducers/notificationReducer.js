@@ -1,22 +1,19 @@
-export const showNotification = (text) => {
-  return {
-    type: 'SHOW',
-    data: {
-      text
-    }
-  }
-}
-
-export const hideNotification = () => {
-  return {
-    type: 'HIDE',
+export const setNotification = (text, seconds = 3) => {
+  return async function showHideNotif(dispatch) {
+    dispatch({
+      type: 'SHOW',
+      data: text
+    })
+    setTimeout(() => {
+      dispatch({ type: 'HIDE' })
+    }, Number(seconds)*1000)
   }
 }
 
 const reducer = (state = '', action) => {
   switch(action.type) {
     case 'SHOW':
-      return action.data.text
+      return action.data
     case 'HIDE':
       return ''
     default:
