@@ -1,3 +1,5 @@
+const { _ } = Cypress
+
 describe('Blog app ', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -109,6 +111,55 @@ describe('Blog app ', function() {
         cy.contains('New Blogpost').find('button').click()
 
         cy.contains('Delete').should('not.exist')
+      })
+
+      it('blogs should be in order of likes', function() {
+        const blog2 = {
+          title: 'Middle Blogpost',
+          author: 'Jaska Jokunen',
+          url: 'http://localhost/blog/1'
+        }
+        const blog3 = {
+          title: 'Not good Blogpost',
+          author: 'Jaska Jokunen',
+          url: 'http://localhost/blog/1'
+        }
+        cy.addBlog(blog3)
+        cy.addBlog(blog2)
+
+        cy.contains('New Blogpost').find('button').click()
+        cy.contains('Middle Blogpost').find('button').click()
+        cy.contains('Not good Blogpost').find('button').click()
+
+        cy.contains('New Blogpost').find('button').contains('like').as('likesNew')
+        cy.contains('Middle Blogpost').find('button').contains('like').as('likesMiddle')
+        cy.contains('Not good Blogpost').find('button').contains('like').as('likesBad')
+
+        cy.get('@likesBad').click().parent().find('#likes').contains('likes: 1')
+        cy.get('@likesMiddle').click().parent().find('#likes').contains('likes: 1')
+        cy.get('@likesMiddle').click().parent().find('#likes').contains('likes: 2')
+        cy.get('@likesNew').click().parent().find('#likes').contains('likes: 1')
+        cy.get('@likesNew').click().parent().find('#likes').contains('likes: 2')
+        cy.get('@likesNew').click().parent().find('#likes').contains('likes: 3')
+        cy.get('@likesNew').click().parent().find('#likes').contains('likes: 4')
+
+        cy.get('#blogposts')
+          .within(() => {
+            cy.get('.blogentry').should('have.length', 3)
+
+            cy.get('.blogentry > #likes')
+              // only take innerHtml from html element
+              .then((likesHtml) => {return _.map(likesHtml, 'innerHTML')})
+              // split the text and convert last part to number
+              .then((likestext) => {return _.map(likestext, (i) => { return Number(i.split(' ')[1]) })})
+              .then((likes) => {
+                //console.log(likes)
+
+                const sorted = likes
+                likes.sort().reverse()
+                expect(likes).to.deep.equal(sorted)
+              })
+          })
       })
     })
   })
