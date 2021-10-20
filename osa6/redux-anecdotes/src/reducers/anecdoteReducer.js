@@ -1,8 +1,9 @@
 /* eslint-disable no-case-declarations */
+import anecdoteService from '../services/anecdoteService'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-export const asObject = (anecdote) => {
+const asObject = (anecdote) => {
   return {
     content: anecdote,
     id: getId(),
@@ -20,20 +21,22 @@ export const voteAnecdote = (id) => {
 }
 
 export const addAnecdote = (content) => {
-  return {
-    type: 'ADD',
-    data: {
-      content
-    }
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.addAnecdote(asObject(content))
+    dispatch({
+      type: 'ADD',
+      data: newAnecdote
+    })
   }
 }
 
-export const addInitialAnecdotes = (content) => {
-  return {
-    type: 'ADD_INIT',
-    data: {
-      content
-    }
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const initAnecdotes = await anecdoteService.getAll()
+    dispatch({
+      type: 'ADD_INIT',
+      data: initAnecdotes
+    })
   }
 }
 
@@ -48,9 +51,9 @@ const reducer = (state = [], action) => {
       }
       return state.map(a => a.id === id ? updAnecdote : a)
     case 'ADD':
-      return [...state, action.data.content]
+      return [...state, action.data]
     case 'ADD_INIT':
-      return action.data.content
+      return action.data
     default:
       return state
   }
