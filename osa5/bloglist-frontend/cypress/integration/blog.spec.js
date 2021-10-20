@@ -91,22 +91,21 @@ describe('Blog app ', function() {
           expect(text).to.equal('Remove New Blogpost by Jaska Jokunen?')
         })
         cy.on('window:confirm', () => true)
+        cy.wait(1000)
         cy.contains('New Blogpot').should('not.exist')
       })
 
-      it.only('user who didnt create cannot delete blogpost', function() {
+      it('user who didnt create cannot delete blogpost', function() {
         const newUser = {
           username: 'user2',
-          password: 'password',
+          password: 'passwords',
           name: 'Joku Muu'
         }
+        cy.contains('New Blogpost')
         cy.request('POST', 'http://localhost:3003/api/users', newUser)
-        cy.contains('logout').click()
-
-        cy.login({ username: newUser.username, password: newUser.password })
+        cy.login({ username: 'user2', password: 'passwords' })
 
         cy.contains('Joku Muu')
-
         cy.contains('New Blogpost').find('button').click()
 
         cy.contains('Delete').should('not.exist')
