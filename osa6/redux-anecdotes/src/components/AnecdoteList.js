@@ -11,9 +11,9 @@ const AnecdoteForm = () => {
   })
   const dispatch = useDispatch()
 
-  const vote = (id, text) => {
-    dispatch(voteAnecdote(id))
-    dispatch(showNotification(`You voted: ${text}`))
+  const vote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote))
+    dispatch(showNotification(`You voted: ${anecdote.content}`))
     setTimeout(() => {
       dispatch(hideNotification())
     }, 5000)
@@ -34,7 +34,7 @@ const AnecdoteForm = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
