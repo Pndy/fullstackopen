@@ -72,7 +72,7 @@ describe('Blog app ', function() {
         cy.addBlog(blog)
       })
 
-      it.only('should be able to like posts', function() {
+      it('should be able to like posts', function() {
         cy.contains('New Blogpost').find('button').click()
         cy.contains('http://localhost/blog/1')
 
@@ -81,6 +81,35 @@ describe('Blog app ', function() {
 
         cy.get('@likes').parent().find('button').contains('like').click()
         cy.get('@likes').contains('1')
+      })
+
+      it('user who created the blog can also delete it', function() {
+        cy.contains('New Blogpost').find('button').click()
+
+        cy.contains('Delete').click()
+        cy.on('window:confirm', (text) => {
+          expect(text).to.equal('Remove New Blogpost by Jaska Jokunen?')
+        })
+        cy.on('window:confirm', () => true)
+        cy.contains('New Blogpot').should('not.exist')
+      })
+
+      it.only('user who didnt create cannot delete blogpost', function() {
+        const newUser = {
+          username: 'user2',
+          password: 'password',
+          name: 'Joku Muu'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users', newUser)
+        cy.contains('logout').click()
+
+        cy.login({ username: newUser.username, password: newUser.password })
+
+        cy.contains('Joku Muu')
+
+        cy.contains('New Blogpost').find('button').click()
+
+        cy.contains('Delete').should('not.exist')
       })
     })
   })
