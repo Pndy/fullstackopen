@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
 import Blog from './components/Blog'
 import BlogAddForm from './components/BlogAddForm'
 import LoginForm from './components/LoginForm'
@@ -7,23 +9,19 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { setNotification } from './reducers/notificationReducer'
+import { initBlogs } from './reducers/blogReducer'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
-  const [notification, setNotification] = useState(null)
+  const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
 
   const blogformRef = useRef()
 
   useEffect(() => {
-    const getAllBlogs = async () => {
-      const resp = await blogService.getAll()
-      resp.sort((a, b) => {
-        return b.likes - a.likes
-      })
-      setBlogs(resp)
-    }
-    getAllBlogs()
+    dispatch(initBlogs())
   }, [])
 
   useEffect(() => {
@@ -41,15 +39,9 @@ const App = () => {
       window.localStorage.setItem('user', JSON.stringify(newUser))
       blogService.setToken(newUser.token)
       setUser(newUser)
-      setNotification({ text: 'logged in' })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
+      dispatch(setNotification(`Welcome ${newUser.name}`, 'info', 5))
     }catch(err){
-      setNotification({ text: 'incorrect login details', type: 'error' })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
+      dispatch(setNotification('Incorrect login details', 'error', 5))
     }
   }
 
@@ -57,29 +49,22 @@ const App = () => {
     window.localStorage.removeItem('user')
     blogService.setToken(null)
     setUser(null)
-    setNotification({ text: 'Logged out' })
-    setTimeout(() => {
-      setNotification(null)
-    }, 3000)
+    dispatch(setNotification('Logged out!', 'info', 5))
   }
 
+  /*
   const handleNewPost = async(details) => {
     try{
       const newPost = await blogService.create(details)
-      setBlogs(blogs.concat(newPost))
-      setNotification({ text: `Added ${newPost.title} by ${newPost.author}` })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
+      //setBlogs(blogs.concat(newPost))
+      dispatch(setNotification(`Added ${newPost.title} by ${newPost.author}`, 'info', 5))
       blogformRef.current.toggleVisibility()
     }catch(err){
-      setNotification({ text: 'Error adding blogpost', type: 'error' })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
+      dispatch(setNotification('Error adding blogpost', 'error', 5))
       console.log(err)
     }
   }
+  */
 
   const likeBlog = async (bloginfo) => {
     const newBlog = {
@@ -100,14 +85,14 @@ const App = () => {
     newBlogList.sort((a, b) => {
       return b.likes - a.likes
     })
-    setBlogs(newBlogList)
+    //setBlogs(newBlogList)
   }
 
   const deleteBlog = async (id) => {
     const response = await blogService.deleteBlog(id)
     if(response.status === 204) {
-      const newBlogList = blogs.filter(b => {return b.id.toString() !== id.toString() })
-      setBlogs(newBlogList)
+      //const newBlogList = blogs.filter(b => {return b.id.toString() !== id.toString() })
+      //setBlogs(newBlogList)
     }
   }
 
@@ -119,16 +104,14 @@ const App = () => {
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         </div>
       }
-      <Notification details={notification} />
+      <Notification />
       {user === null ?
         <LoginForm
           handleLogin={handleLogin}
         />
         :
         <Togglable showText="add new blog" ref={blogformRef}>
-          <BlogAddForm
-            handleNewPost={handleNewPost}
-          />
+          <BlogAddForm formRef={blogformRef}/>
         </Togglable>
       }
       <div id="blogposts">

@@ -1,22 +1,28 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { addBlog } from '../reducers/blogReducer'
 
-const BlogAddForm = (props) => {
+const BlogAddForm = ({ formRef }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const dispatch = useDispatch()
+
   const blogAdd = async(e) => {
     e.preventDefault()
 
-    await props.handleNewPost({
+    dispatch(addBlog({
       title,
       author,
       url
-    })
+    }))
+
     setTitle('')
     setAuthor('')
     setUrl('')
+
+    formRef.current.toggleVisibility()
   }
 
   return (
@@ -59,8 +65,6 @@ const BlogAddForm = (props) => {
   )
 }
 
-BlogAddForm.propTypes = {
-  handleNewPost: PropTypes.func.isRequired
-}
+BlogAddForm.propTypes = {}
 
 export default BlogAddForm
