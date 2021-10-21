@@ -1,14 +1,16 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, Link } from 'react-router-dom'
 
 import Blog from './components/Blog'
 import BlogAddForm from './components/BlogAddForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import UserList from './components/UserList'
 
 import { initBlogs } from './reducers/blogReducer'
-import { initUser, login, logout } from './reducers/userReducer'
+import { initUser, login, logout } from './reducers/loginReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -39,26 +41,39 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
+      <div>
+        <Link to='/'>Home</Link>
+        <Link to='/users'>Users</Link>
+      </div>
       {Object.keys(user).length === 0 ? null :
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         </div>
       }
       <Notification />
-      {Object.keys(user).length === 0 ?
-        <LoginForm
-          handleLogin={handleLogin}
-        />
-        :
-        <Togglable showText="add new blog" ref={blogformRef}>
-          <BlogAddForm formRef={blogformRef}/>
-        </Togglable>
-      }
-      <div id="blogposts">
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} />
-        )}
-      </div>
+      <Switch>
+        <Route path='/users'>
+          <UserList />
+        </Route>
+        <Route path='/'>
+          <div>
+            {Object.keys(user).length === 0 ?
+              <LoginForm
+                handleLogin={handleLogin}
+              />
+              :
+              <Togglable showText="add new blog" ref={blogformRef}>
+                <BlogAddForm formRef={blogformRef}/>
+              </Togglable>
+            }
+            <div id="blogposts">
+              {blogs.map(blog =>
+                <Blog key={blog.id} blog={blog} user={user} />
+              )}
+            </div>
+          </div>
+        </Route>
+      </Switch>
     </div>
   )
 }
