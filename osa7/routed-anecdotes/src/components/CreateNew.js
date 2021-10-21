@@ -7,6 +7,12 @@ const CreateNew = (props) => {
   const author = useField('author')
   const info = useField('info')
 
+  const getFields = (field) => {
+    // eslint-disable-next-line no-unused-vars
+    const { reset, ...inputFields } = field
+    return inputFields
+  }
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -30,15 +36,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...getFields(content)} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...getFields(author)} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...getFields(info)} />
         </div>
         <button>create</button>
         <button type="button" onClick={handleReset}>reset</button>
