@@ -1,11 +1,30 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const [visible, setVisibility] = useState(false)
+  const dispatch = useDispatch()
 
   const toggleVisibility = () => {
     setVisibility(!visible)
+  }
+
+
+  const like = async (bloginfo) => {
+    const newBlog = {
+      title: bloginfo.title,
+      author: bloginfo.author,
+      url: bloginfo.url,
+      likes: bloginfo.likes+1,
+      user: bloginfo.user.id,
+    }
+    dispatch(likeBlog(newBlog, bloginfo.id))
+  }
+
+  const deleteB = async (id) => {
+    dispatch(deleteBlog(id))
   }
 
   return (
@@ -15,13 +34,13 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
       {visible ?
         <>
           <br />{blog.url}
-          <br /><span id="likes">likes: {blog.likes}</span> <button onClick={() => likeBlog(blog)}>like</button>
+          <br /><span id="likes">likes: {blog.likes}</span> <button onClick={() => like(blog)}>like</button>
           <br />{blog.user.name}
           {user && blog.user.username === user.username ?
             <>
               <br /><button onClick={() => {
                 if(window.confirm(`Remove ${blog.title} by ${blog.author}?`)){
-                  deleteBlog(blog.id)
+                  deleteB(blog.id)
                 }
               }}>Delete</button>
             </>
@@ -36,8 +55,6 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
   user: PropTypes.object
 }
 

@@ -52,50 +52,6 @@ const App = () => {
     dispatch(setNotification('Logged out!', 'info', 5))
   }
 
-  /*
-  const handleNewPost = async(details) => {
-    try{
-      const newPost = await blogService.create(details)
-      //setBlogs(blogs.concat(newPost))
-      dispatch(setNotification(`Added ${newPost.title} by ${newPost.author}`, 'info', 5))
-      blogformRef.current.toggleVisibility()
-    }catch(err){
-      dispatch(setNotification('Error adding blogpost', 'error', 5))
-      console.log(err)
-    }
-  }
-  */
-
-  const likeBlog = async (bloginfo) => {
-    const newBlog = {
-      title: bloginfo.title,
-      author: bloginfo.author,
-      url: bloginfo.url,
-      likes: bloginfo.likes+1,
-      user: bloginfo.user.id,
-    }
-
-    const response = await blogService.update(newBlog, bloginfo.id)
-    const newBlogList = blogs.map((b) => {
-      if(b.id.toString() === response.id.toString()){
-        b.likes = response.likes
-      }
-      return b
-    })
-    newBlogList.sort((a, b) => {
-      return b.likes - a.likes
-    })
-    //setBlogs(newBlogList)
-  }
-
-  const deleteBlog = async (id) => {
-    const response = await blogService.deleteBlog(id)
-    if(response.status === 204) {
-      //const newBlogList = blogs.filter(b => {return b.id.toString() !== id.toString() })
-      //setBlogs(newBlogList)
-    }
-  }
-
   return (
     <div>
       <h1>Blogs</h1>
@@ -116,7 +72,7 @@ const App = () => {
       }
       <div id="blogposts">
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} user={user} />
+          <Blog key={blog.id} blog={blog} user={user} />
         )}
       </div>
     </div>
