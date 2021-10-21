@@ -1,10 +1,13 @@
+let currTimeout
+
 export const setNotification = (text, seconds = 3) => {
   return async function showHideNotif(dispatch) {
     dispatch({
       type: 'SHOW',
       data: text
     })
-    setTimeout(() => {
+    clearTimeout(currTimeout)
+    currTimeout = setTimeout(() => {
       dispatch({ type: 'HIDE' })
     }, Number(seconds)*1000)
   }
