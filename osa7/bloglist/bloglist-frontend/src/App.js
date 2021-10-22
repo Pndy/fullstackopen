@@ -57,18 +57,15 @@ const App = () => {
 
   return (
     <div>
-      <h1>Blogs</h1>
-      <div>
-        <Link to='/'>Home</Link>
-        <Link to='/users'>Users</Link>
+      <div className="navbar">
+        <Link to='/' className="navbar-item">Home</Link>
+        <Link to='/users' className="navbar-item">Users</Link>
         {Object.keys(user).length === 0 ?
           <LoginForm
             handleLogin={handleLogin}
           />
           :
-          <div>
-            <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-          </div>
+          <span className="navbar-item">{user.name} logged in <button onClick={handleLogout}>logout</button></span>
         }
       </div>
       <Notification />
@@ -84,6 +81,7 @@ const App = () => {
         </Route>
         <Route path='/'>
           <div>
+            <h2>Blogs</h2>
             {Object.keys(user).length === 0 ? null :
               <Togglable showText="add new blog" ref={blogformRef}>
                 <BlogAddForm formRef={blogformRef}/>

@@ -1,16 +1,24 @@
+.navbar {
+  padding: 5px;
+  background: lightgrey;
+}
+
+.navbar-item {
+  padding-right: 10px;
+}
 
 .error {
   color: red;
   background: lightgrey;
   padding: 5px;
-  
+  margin: 5px;  
 }
-
 
 .info {
   color: lightskyblue;
   background: lightgrey;
   padding: 5px;
+  margin: 5px;
 }
 
 .blogentry {
