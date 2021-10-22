@@ -25,7 +25,7 @@ export const addBlog = (blog) => {
       })
       dispatch(setNotification(`Added ${blogresp.title} by ${blogresp.author}`, 'info', 5))
     }catch(err){
-      dispatch(setNotification('Error adding blogpost', 'error', 5))
+      dispatch(setNotification('Error adding blogpost', 'warning', 5))
     }
   }
 }
@@ -62,7 +62,7 @@ export const deleteBlog = (id) => {
       })
       dispatch(setNotification('Blogpost deleted', 'info', 5))
     }else{
-      dispatch(setNotification('Error deleting blogpost', 'error', 5))
+      dispatch(setNotification('Error deleting blogpost', 'warning', 5))
     }
   }
 }

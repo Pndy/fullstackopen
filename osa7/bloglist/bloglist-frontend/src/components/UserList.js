@@ -1,12 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Spinner } from 'react-bootstrap'
 
 const UserList = () => {
   const users = useSelector(state => state.users)
 
   if(!users) {
-    return null
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    )
   }
 
   return (

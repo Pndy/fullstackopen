@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, Link, useRouteMatch } from 'react-router-dom'
+import { Navbar, Nav, NavDropdown, Container, Button } from 'react-bootstrap'
 
 import BlogAddForm from './components/BlogAddForm'
 import LoginForm from './components/LoginForm'
@@ -56,18 +57,27 @@ const App = () => {
   }
 
   return (
-    <div>
-      <div className="navbar">
-        <Link to='/' className="navbar-item">Home</Link>
-        <Link to='/users' className="navbar-item">Users</Link>
-        {Object.keys(user).length === 0 ?
-          <LoginForm
-            handleLogin={handleLogin}
-          />
-          :
-          <span className="navbar-item">{user.name} logged in <button onClick={handleLogout}>logout</button></span>
-        }
-      </div>
+    <Container>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to='/'>Home</Nav.Link>
+            <Nav.Link as={Link} to='/users'>Users</Nav.Link>
+          </Nav>
+          <Navbar.Collapse className="justify-content-end">
+            {Object.keys(user).length === 0 ?
+              <NavDropdown title="Login" id="basic-nav-dropdown">
+                <LoginForm
+                  handleLogin={handleLogin}
+                />
+              </NavDropdown>
+              :
+              <Navbar.Text className="navbar-item">{user.name} logged in <Button variant='danger' onClick={handleLogout}>Logout</Button></Navbar.Text>
+            }
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
       <Notification />
       <Switch>
         <Route path='/users/:id'>
@@ -95,7 +105,7 @@ const App = () => {
           </div>
         </Route>
       </Switch>
-    </div>
+    </Container>
   )
 }
 

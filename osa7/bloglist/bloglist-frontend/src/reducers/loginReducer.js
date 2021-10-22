@@ -15,7 +15,7 @@ export const login = (details) => {
       })
       dispatch(setNotification(`Welcome ${newUser.name}`, 'info', 5))
     }catch(err){
-      dispatch(setNotification('Incorrect login details', 'error', 5))
+      dispatch(setNotification('Incorrect login details', 'warning', 5))
     }
   }
 }

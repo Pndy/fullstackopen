@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { Spinner, Form, Button, InputGroup } from 'react-bootstrap'
 
 import { likeBlog, addComment } from '../reducers/blogReducer'
 
@@ -9,6 +10,7 @@ const ShowBlog = ({ blog }) => {
   const like = async (bloginfo) => {
     const newBlog = {
       ...bloginfo,
+      user: bloginfo.user.id,
       likes: bloginfo.likes+1,
     }
     dispatch(likeBlog(newBlog, bloginfo.id))
@@ -22,7 +24,11 @@ const ShowBlog = ({ blog }) => {
   }
 
   if(!blog){
-    return null
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    )
   }
   return (
     <div>
@@ -31,10 +37,15 @@ const ShowBlog = ({ blog }) => {
       <br /><span id="likes">likes: {blog.likes}</span><button onClick={() => like(blog)}>like</button>
       <br />Added by: {blog.user.name}
       <br /><h3>Comments</h3>
-      <form onSubmit={submitComment}>
-        <input type="text" name="comment" />
-        <button>add comment</button>
-      </form>
+      <Form onSubmit={submitComment}>
+        <InputGroup className="mb-3">
+          <Form.Control
+            type="text"
+            name="comment"
+          />
+          <Button type="submit">add comment</Button>
+        </InputGroup>
+      </Form>
       {!blog.comments || blog.comments.length === 0 ?
         <p>No Comments</p> :
         <ul>

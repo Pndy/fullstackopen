@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Button, Form } from 'react-bootstrap'
+
 import { addBlog } from '../reducers/blogReducer'
 
 const BlogAddForm = ({ formRef }) => {
@@ -27,40 +29,40 @@ const BlogAddForm = ({ formRef }) => {
 
   return (
     <div>
-      <form onSubmit={blogAdd}>
+      <Form onSubmit={blogAdd}>
         <h2>Add new blog</h2>
-        <div>
-          title:
-          <input
+        <Form.Group className="mb-3">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
             type="text"
             id="titleInput"
             value={title}
             name="title"
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          author:
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Author</Form.Label>
+          <Form.Control
             type="text"
             id="authorInput"
             value={author}
             name="author"
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
-          url:
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Url</Form.Label>
+          <Form.Control
             type="text"
             id="urlInput"
             value={url}
             name="url"
             onChange={({ target }) => setUrl(target.value)}
           />
-        </div>
-        <button type="submit" id="blogformSubmit">Add new</button>
-      </form>
+        </Form.Group>
+        <Button type="submit" id="blogformSubmit">Add new</Button>
+      </Form>
     </div>
   )
 }
