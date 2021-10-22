@@ -41,6 +41,17 @@ export const likeBlog = (blog, id) => {
   }
 }
 
+export const addComment = (text, id) => {
+  return async dispatch => {
+    const respblog = await blogService.addCommentToBlog({ comment: text }, id)
+    dispatch({
+      type: 'COMMENT_BLOG',
+      data: respblog
+    })
+    dispatch(setNotification(`Commented: ${text}`, 'info', 5))
+  }
+}
+
 export const deleteBlog = (id) => {
   return async dispatch => {
     const response = await blogService.deleteBlog(id)
@@ -70,6 +81,13 @@ const reducer = (state = [], action) => {
         return b
       }).sort((a, b) => {
         return b.likes - a.likes
+      })
+    case 'COMMENT_BLOG':
+      return state.map((b) => {
+        if(b.id.toString() === action.data.id.toString()){
+          b.comments = action.data.comments
+        }
+        return b
       })
     case 'DELETE_BLOG':
       return state.filter(b => {return b.id.toString() !== action.data.toString() })
