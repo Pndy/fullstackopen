@@ -1,9 +1,17 @@
-import React from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import React, {useState} from 'react'
+import { useQuery, useMutation } from '@apollo/client'
+import { ALL_AUTHORS, UPDATE_AUTHOR_BORN } from '../queries'
 
-const Authors = (props) => {  
+const Authors = (props) => {
+  const [name, setName] = useState('')  
+  const [born, setBorn] = useState('')
   const authors = useQuery(ALL_AUTHORS)
+  const [ updateAuthor ] = useMutation(UPDATE_AUTHOR_BORN, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      console.log(error)
+    }
+  })
 
   if (!props.show) {
     return null
@@ -14,6 +22,23 @@ const Authors = (props) => {
     return <div>Loading...</div>
   }
 
+  const submit = (e) => {
+    e.preventDefault()
+
+    if(name === '' || isNaN(born)){
+      return
+    }
+
+    updateAuthor({
+      variables: {
+        name,
+        setBornTo: Number(born)
+      }
+    })
+
+    setName('')
+    setBorn('')
+  }
   
   return (
     <div>
@@ -38,7 +63,27 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
+      <div>
+        <form onSubmit={submit}>
+          <div>
+            name
+            <input
+              type="text"
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+            />
+          </div>
+          <div>
+            born
+            <input
+              type="number"
+              value={born}
+              onChange={({ target }) => setBorn(target.value)}
+            />
+          </div>
+          <button>Update</button>
+        </form>
+      </div>
     </div>
   )
 }
