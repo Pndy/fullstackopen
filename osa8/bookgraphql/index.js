@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
+const { UserInputError } = require('apollo-server-errors')
 const mongoose = require('mongoose')
 const uuid = require('uuid');
 require('dotenv').config()
@@ -61,7 +62,7 @@ const resolvers = {
     allBooks: (root, args) => {
 
       let filters = {}
-      if(args.author){
+      if(args.author){ // Does not work yet
         filters = { ...filters, 'author.name': args.author }
       }
       if(args.genre){
@@ -69,16 +70,6 @@ const resolvers = {
       }
 
       return Book.find(filters).populate('author')
-
-      /*let booklist = books
-      if(args.author){
-        booklist = booklist.filter(b => b.author === args.author)
-      }
-      if(args.genre){
-        booklist = booklist.filter(b => b.genres.includes(args.genre))
-      }
-
-      return booklist */
     },
     allAuthors: () => Author.find({})
   },
@@ -86,13 +77,25 @@ const resolvers = {
     addBook: async (root, args) => {
       let author = await Author.findOne({ name: args.author })
       if(!author){
-        newAuthor = new Author({ name: args.author })
-        author = await newAuthor.save()
+        try{
+          newAuthor = new Author({ name: args.author })
+          author = await newAuthor.save()
+        }catch(e){
+          throw new UserInputError(e.message, {
+            invalidArgs: args
+          })
+        }
       }
-      
-      let newBook = new Book({ ...args, author: author })
 
-      const savedBook = await newBook.save()
+      try{
+        let newBook = new Book({ ...args, author: author })
+        const savedBook = await newBook.save()
+      }catch(e){
+        throw new UserInputError(e.message, {
+          invalidArgs: args
+        })
+      }
+
       return savedBook
     },
     editAuthor: async (root, args) => {
@@ -101,9 +104,14 @@ const resolvers = {
       if(!author){
         return null
       }
-
+      try{
       author.born = args.setBornTo
       const savedAuthor = await author.save()
+      }catch(e){
+        throw new UserInputError(e.message, {
+          invalidArgs: args
+        })
+      }
       return savedAuthor
     }
   },
